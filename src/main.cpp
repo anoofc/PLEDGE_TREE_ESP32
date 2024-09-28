@@ -1,4 +1,4 @@
-#define DEBUG         0  // Debug Mode
+#define DEBUG         1  // Debug Mode
 #define DMX_BULB_NUM  40  // Number of bulbs in the DMX chain 
 
 #define   WARM  255, 180, 40
@@ -8,25 +8,19 @@
 #include  "SparkFunDMX.h"
 #include  <BluetoothSerial.h>
 
-uint8_t bulb_count = 0;
+uint8_t bulb_count_1 = 0;
+uint8_t bulb_count_2 = 0;
+uint8_t bulb_count_3 = 0;
 
-uint8_t animation_3[DMX_BULB_NUM] = {
-  1,2,3,4,5,6,7,8,9,10,
-  11,12,13,14,15,16,17,18,19,20,
+uint8_t animation_1[10] = {
+  1,2,3,4,5,6,7,8,9,10
+};
+uint8_t animation_2[10] = {
+  11,12,13,14,15,16,17,18,19,20
+};
+uint8_t animation_3[20] = {
   21,22,23,24,25,26,27,28,29,30,
   31,32,33,34,35,36,37,38,39,40
-};
-uint8_t animation_1[DMX_BULB_NUM] = {
-  18, 5, 22, 7, 39, 11, 2, 26, 33, 12, 
-  35, 21, 9, 3, 24, 17, 28, 14, 27, 4, 
-  37, 20, 19, 36, 16, 6, 23, 1, 30, 38, 
-  34, 32, 8, 40, 13, 25, 31, 15, 10, 29
-};
-uint8_t animation_2[DMX_BULB_NUM] = {
-  6, 33, 10, 25, 2, 31, 17, 21, 36, 27,
-  14, 19, 8, 1, 22, 4, 30, 38, 9, 39, 
-  18, 12, 40, 35, 32, 3, 26, 23, 5, 29,
-  11, 28, 7, 16, 24, 34, 13, 15, 37, 20
 };
 
 SparkFunDMX dmx;
@@ -51,6 +45,42 @@ void all_bulb_on() {
   } if (DEBUG){Serial.println("All Bulbs On");} dmx.update();dmx.update();dmx.update();
 }
 
+void set_1_all_off() {
+  for (int i = 1; i <= 10*3; i++) {
+    dmx.write(i, 0);
+  } 
+  if (DEBUG){Serial.println("Set 1 Bulbs Off");} dmx.update();dmx.update();dmx.update();
+}
+void set_1_all_on() {
+  for (int i = 1; i <= 10; i++) {
+    dmx.write((i*3)-2,255); dmx.write((i*3)-1,180); dmx.write(i*3,40);
+  } if (DEBUG){Serial.println("Set 1 Bulbs On");} dmx.update();dmx.update();dmx.update();
+}
+
+void set_2_all_off() {
+  for (int i = 11; i <= 20*3; i++) {
+    dmx.write(i, 0);
+  } 
+  if (DEBUG){Serial.println("Set 2 Bulbs Off");} dmx.update();dmx.update();dmx.update();
+}
+void set_2_all_on() {
+  for (int i = 11; i <= 20; i++) {
+    dmx.write((i*3)-2,255); dmx.write((i*3)-1,180); dmx.write(i*3,40);
+  } if (DEBUG){Serial.println("Set 2 Bulbs On");} dmx.update();dmx.update();dmx.update();
+}
+
+void set_3_all_off() {
+  for (int i = 21; i <= 40*3; i++) {
+    dmx.write(i, 0);
+  } 
+  if (DEBUG){Serial.println("Set 3 Bulbs Off");} dmx.update();dmx.update();dmx.update();
+}
+void set_3_all_on() {
+  for (int i = 21; i <= 40; i++) {
+    dmx.write((i*3)-2,255); dmx.write((i*3)-1,180); dmx.write(i*3,40);
+  } if (DEBUG){Serial.println("Set 3 Bulbs On");} dmx.update();dmx.update();dmx.update();
+}
+
 
 void bulb_test(){
   for (int i = 1; i <= DMX_BULB_NUM; i++) {
@@ -59,41 +89,94 @@ void bulb_test(){
   }
 }
 
-void reset_bulb() {
-  write_color(WARM, animation_1[bulb_count]);
-  delay(1000);
-  if (DEBUG){Serial.println("Max Bulb Reached");}
-  Serial.println("RESET");
+void reset_bulb_set1() {
+  if (DEBUG){Serial.println("Set 1 Max Bulb Reached");}
+  Serial.println("RESET SET 1");
   for (int i=0; i<3; i++) {
-    all_bulb_on();    delay(500);
-    all_bulb_off();   delay(500);
+    set_1_all_on();    delay(500);
+    set_1_all_off();   delay(500);
   }
-  for (int i = sizeof(animation_1); i >= 0; i--) {
+  for (int i = sizeof(animation_1)-1; i >= 0; i--) {
     write_color(OFF, animation_1[i]);
     delay(250);
   }
-  bulb_count = 0;
-  if (DEBUG){Serial.println("Bulb Reset");}
+  bulb_count_1 = 0;
+  if (DEBUG){Serial.println("Bulb Set 1 Reset");}
 }
 
-void add_bulb() {
-  if (DEBUG){Serial.println("BULB_COUNT: "+ String(bulb_count) + "\t BULB_ID: " +String(animation_1[bulb_count]) );}
-  if (bulb_count == sizeof(animation_1)) { reset_bulb();}
-  else {
-    write_color(WARM, animation_1[bulb_count]);
-    bulb_count++;
+void reset_bulb_set2() {
+  if (DEBUG){Serial.println("Set 2 Max Bulb Reached");}
+  Serial.println("RESET SET 2");
+  for (int i=0; i<3; i++) {
+    set_2_all_on();    delay(500);
+    set_2_all_off();   delay(500);
+  }
+  for (int i = sizeof(animation_2)-1; i >= 0; i--) {
+    write_color(OFF, animation_2[i]);
+    delay(250);
+  }
+  bulb_count_2 = 0;
+  if (DEBUG){Serial.println("Bulb Set 2 Reset");}
+}
+
+void reset_bulb_set3() {
+  if (DEBUG){Serial.println("Set 3 Max Bulb Reached");}
+  Serial.println("RESET SET 3");
+  for (int i=0; i<3; i++) {
+    set_3_all_on();    delay(500);
+    set_3_all_off();   delay(500);
+  }
+  for (int i = sizeof(animation_3)-1; i >= 0; i--) {
+    write_color(OFF, animation_3[i]);
+    delay(250);
+  }
+  bulb_count_3 = 0;
+  if (DEBUG){Serial.println("Bulb Set 3 Reset");}
+}
+
+void addSet1(){
+  if (DEBUG){Serial.println("BULB_COUNT: "+ String(bulb_count_1) + "\t BULB_ID: " +String(animation_1[bulb_count_1]) );}
+  if (bulb_count_1 < sizeof(animation_1)) {
+    write_color(WARM, animation_1[bulb_count_1]);
+    bulb_count_1++;
     if (DEBUG){Serial.println("Bulb Added");}
   }
+  if (bulb_count_1 == sizeof(animation_1)) { delay(1000); reset_bulb_set1();}
 }
 
+void addSet2(){
+  if (DEBUG){Serial.println("BULB_COUNT: "+ String(bulb_count_2) + "\t BULB_ID: " + String(animation_2[bulb_count_2]) );}
+  if (bulb_count_2 <  sizeof(animation_2)) {
+    write_color(WARM, animation_2[bulb_count_2]);
+    bulb_count_2++;
+    if (DEBUG){Serial.println("Bulb Added");}
+  }
+  if (bulb_count_2 == sizeof(animation_2)) { delay(1000); reset_bulb_set2();}
+}
+
+void addSet3(){
+  if (DEBUG){Serial.println("BULB_COUNT: "+ String(bulb_count_3) + "\t BULB_ID: " +String(animation_3[bulb_count_3]) );}
+  if (bulb_count_3 < sizeof(animation_3)) {
+    write_color(WARM, animation_3[bulb_count_3]);
+    bulb_count_3++;
+    if (DEBUG){Serial.println("Bulb Added");}
+  }
+  if (bulb_count_3 == sizeof(animation_3)) { delay(1000); reset_bulb_set3();}
+}
 
 void processData(char incoming) {
   if (incoming == 'A') {
-    add_bulb();
+    addSet1();
+  } else if (incoming == 'B'){
+    addSet2();
+  } else if (incoming == 'C'){
+    addSet3();
   } else if (incoming == 'X') {
     all_bulb_on();
   } else if (incoming == 'Z') {
-    bulb_count = 0;
+    bulb_count_1 = 0;
+    bulb_count_2 = 10;
+    bulb_count_3 = 20;
     all_bulb_off();
   } else if (incoming == 'T') {
     bulb_test();
@@ -125,8 +208,8 @@ void setup() {
 }
 
 void loop() {
-  // readSerial();
-  readBTSerial();              // Read Bluetooth Serial
+  readSerial();
+  // readBTSerial();              // Read Bluetooth Serial
 
 }
 
