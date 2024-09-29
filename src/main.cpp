@@ -1,4 +1,4 @@
-#define DEBUG         1  // Debug Mode
+#define DEBUG         0  // Debug Mode
 #define DMX_BULB_NUM  40  // Number of bulbs in the DMX chain 
 
 #define   WARM  255, 180, 40
@@ -175,8 +175,8 @@ void processData(char incoming) {
     all_bulb_on();
   } else if (incoming == 'Z') {
     bulb_count_1 = 0;
-    bulb_count_2 = 10;
-    bulb_count_3 = 20;
+    bulb_count_2 = 0;
+    bulb_count_3 = 0;
     all_bulb_off();
   } else if (incoming == 'T') {
     bulb_test();
@@ -208,8 +208,8 @@ void setup() {
 }
 
 void loop() {
-  readSerial();
-  // readBTSerial();              // Read Bluetooth Serial
+  // readSerial();
+  readBTSerial();              // Read Bluetooth Serial
 
 }
 
